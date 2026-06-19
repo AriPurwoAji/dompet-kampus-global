@@ -49,3 +49,9 @@ app.*.map.json
 # Dokumen lokal (tidak perlu di-push)
 CLAUDE.md
 *.docx
+
+# Firebase sensitive files
+mobile/android/app/google-services.json
+*firebase-adminsdk*.json
+backend/firebase_service_account.json
+backend/.env
