@@ -82,16 +82,19 @@ class _AppFieldState extends State<AppField> {
           duration: const Duration(milliseconds: 150),
           height: 54,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: _focused ? Colors.white : const Color(0xFFF5F7FA),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: _focused ? AppColors.primary : AppColors.line,
-              width: 1.0,
+              color: _focused ? AppColors.primary : const Color(0xFFDDE1E7),
+              width: _focused ? 1.8 : 1.2,
             ),
             boxShadow: _focused
                 ? [
                     BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.1), blurRadius: 0, spreadRadius: 4)
+                        color: AppColors.primary.withValues(alpha: 0.12),
+                        blurRadius: 8,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 2))
                   ]
                 : [],
           ),
