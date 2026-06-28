@@ -6,7 +6,6 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/auth/otp_bloc.dart';
-import '../../widgets/app_button.dart';
 import '../../widgets/code_input.dart';
 import '../../widgets/feature_icon.dart';
 
@@ -34,8 +33,11 @@ class _TwoFASmtpPageState extends State<TwoFASmtpPage> {
     _countdown?.cancel();
     setState(() => _timer = AppConstants.otpResendSeconds);
     _countdown = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_timer <= 0) t.cancel();
-      else setState(() => _timer--);
+      if (_timer <= 0) {
+        t.cancel();
+      } else {
+        setState(() => _timer--);
+      }
     });
   }
 
@@ -108,7 +110,7 @@ class _TwoFASmtpPageState extends State<TwoFASmtpPage> {
                       const SizedBox(height: 28),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 80),
-                        transform: _hasError ? (Matrix4.identity()..translate(8.0)) : Matrix4.identity(),
+                        transform: _hasError ? (Matrix4.identity()..translateByDouble(8.0, 0, 0, 0)) : Matrix4.identity(),
                         child: CodeInput(value: _code, onChanged: _onCodeChanged, hasError: _hasError),
                       ),
                       if (_hasError) ...[
