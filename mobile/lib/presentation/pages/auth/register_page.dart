@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/error/failures.dart';
 import '../../../core/theme/app_colors.dart';
@@ -23,30 +24,30 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _agree = true;
   bool _loading = false;
 
-  bool get _valid => _name.length > 1 && _email.contains('@') && _pw.length >= 6 && _agree;
+  bool get _valid =>
+      _name.length > 1 && _email.contains('@') && _pw.length >= 6 && _agree;
 
   Future<void> _register() async {
     setState(() => _loading = true);
     try {
-      // 1. Buat akun di Firebase
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _email,
         password: _pw,
       );
       await credential.user?.updateDisplayName(_name);
-
-      // 2. Ambil Firebase ID Token lalu kirim ke backend
       final idToken = await credential.user?.getIdToken();
       if (idToken == null) throw Exception('Gagal mendapatkan token Firebase');
 
       await sl<RegisterWithOtpUsecase>()(idToken);
 
-      // 3. Backend sudah buat user + kirim OTP ke email → ke halaman verifikasi
       if (mounted) context.go('/verify-email');
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message ?? 'Registrasi gagal.'), backgroundColor: AppColors.red),
+          SnackBar(
+              content: Text(e.message ?? 'Registrasi gagal.'),
+              backgroundColor: AppColors.red),
         );
       }
     } on ServerFailure catch (e) {
@@ -58,13 +59,16 @@ class _RegisterPageState extends State<RegisterPage> {
     } on NetworkFailure catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tidak ada koneksi internet.'), backgroundColor: AppColors.red),
+          const SnackBar(
+              content: Text('Tidak ada koneksi internet.'),
+              backgroundColor: AppColors.red),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()), backgroundColor: AppColors.red),
+          SnackBar(
+              content: Text(e.toString()), backgroundColor: AppColors.red),
         );
       }
     } finally {
@@ -74,37 +78,80 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
           children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                icon: const Icon(DkgIcons.arrowLeft, color: AppColors.ink),
-                onPressed: () => context.go('/'),
+            // ── Navy header ──────────────────────────────────
+            Container(
+              color: AppColors.navy,
+              width: double.infinity,
+              padding: EdgeInsets.fromLTRB(
+                  24, MediaQuery.of(context).padding.top + 16, 24, 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () => context.go('/'),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: AppColors.navyMid,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.arrow_back_ios_new_rounded,
+                          size: 16, color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(Icons.water_drop_rounded,
+                            size: 22, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Buat akun',
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                letterSpacing: -0.3,
+                              )),
+                          Text('Daftar gratis dalam 1 menit',
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 13,
+                                color: Colors.white60,
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
+
+            // ── Form area ────────────────────────────────────
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(26, 10, 26, 24),
+                padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Buat akun',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 27,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.ink,
-                          letterSpacing: -0.4,
-                        )),
-                    const SizedBox(height: 6),
-                    const Text('Daftar gratis dalam 1 menit',
-                        style: TextStyle(fontSize: 14.5, color: AppColors.slate500)),
-                    const SizedBox(height: 22),
-                    const SizedBox(height: 20),
                     AppField(
                       label: 'Nama lengkap',
                       value: _name,
@@ -130,12 +177,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       placeholder: 'Min. 6 karakter',
                       prefixIcon: const Icon(DkgIcons.lock, size: 20),
                       suffixIcon: IconButton(
-                        icon: Icon(_showPw ? DkgIcons.eyeOff : DkgIcons.eye,
-                            size: 20, color: AppColors.slate400),
+                        icon: Icon(
+                            _showPw ? DkgIcons.eyeOff : DkgIcons.eye,
+                            size: 20,
+                            color: AppColors.slate400),
                         onPressed: () => setState(() => _showPw = !_showPw),
                       ),
                     ),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 20),
                     GestureDetector(
                       onTap: () => setState(() => _agree = !_agree),
                       child: Row(
@@ -146,15 +195,19 @@ class _RegisterPageState extends State<RegisterPage> {
                             width: 22,
                             height: 22,
                             decoration: BoxDecoration(
-                              color: _agree ? AppColors.primary : Colors.white,
+                              color:
+                                  _agree ? AppColors.primary : Colors.white,
                               borderRadius: BorderRadius.circular(7),
                               border: Border.all(
-                                color: _agree ? AppColors.primary : AppColors.line,
+                                color: _agree
+                                    ? AppColors.primary
+                                    : AppColors.line,
                                 width: 1.6,
                               ),
                             ),
                             child: _agree
-                                ? const Icon(DkgIcons.check, size: 14, color: Colors.white)
+                                ? const Icon(DkgIcons.check,
+                                    size: 14, color: Colors.white)
                                 : null,
                           ),
                           const SizedBox(width: 10),
@@ -171,12 +224,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                   TextSpan(text: 'Saya setuju dengan '),
                                   TextSpan(
                                     text: 'Syarat & Ketentuan',
-                                    style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
+                                    style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.w700),
                                   ),
                                   TextSpan(text: ' dan '),
                                   TextSpan(
                                     text: 'Kebijakan Privasi',
-                                    style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
+                                    style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.w700),
                                   ),
                                   TextSpan(text: '.'),
                                 ],
@@ -192,12 +249,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       onPressed: _valid ? _register : null,
                       isLoading: _loading,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text('Sudah punya akun? ',
-                            style: TextStyle(fontSize: 14, color: AppColors.ink)),
+                            style: TextStyle(
+                                fontSize: 14, color: AppColors.slate500)),
                         GestureDetector(
                           onTap: () => context.go('/login'),
                           child: const Text('Masuk',
