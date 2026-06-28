@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,7 +9,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_field.dart';
-import '../../widgets/app_logo.dart';
 import '../../widgets/feature_icon.dart';
 
 class LoginPage extends StatefulWidget {
@@ -29,40 +29,25 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _loginWithGoogle() async {
     setState(() => _gLoading = true);
     try {
-      debugPrint('[Auth] Google sign-in: memulai...');
       final googleSignIn = GoogleSignIn();
-      // Keluar dari sesi Google yang ter-cache agar dialog pilih akun selalu muncul
       await googleSignIn.signOut();
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
-        debugPrint('[Auth] Google sign-in: dibatalkan user');
         setState(() => _gLoading = false);
         return;
       }
-      debugPrint('[Auth] Google sign-in: akun dipilih → ${googleUser.email}');
-
       final googleAuth = await googleUser.authentication;
-      debugPrint(
-          '[Auth] Google auth: accessToken=${googleAuth.accessToken != null ? "OK" : "NULL"}, '
-          'idToken=${googleAuth.idToken != null ? "OK" : "NULL"}');
-
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      debugPrint('[Auth] Firebase sign-in OK → uid=${userCredential.user?.uid}');
-
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
       final idToken = await userCredential.user?.getIdToken();
-      debugPrint(
-          '[Auth] Firebase ID token: ${idToken != null ? "OK (${idToken.length} chars)" : "NULL"}');
-
       if (idToken != null && mounted) {
-        debugPrint('[Auth] Kirim token ke backend → POST /v1/auth/verify-token');
         context.read<AuthBloc>().add(AuthLoginWithFirebase(idToken));
       }
-    } catch (e, st) {
-      debugPrint('[Auth] Google sign-in ERROR: $e\n$st');
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login Google gagal: $e')),
@@ -75,7 +60,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _loginWithEmail() async {
     try {
-      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _email,
         password: _pw,
       );
@@ -86,7 +72,9 @@ class _LoginPageState extends State<LoginPage> {
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message ?? 'Login gagal.')),
+          SnackBar(
+              content: Text(e.message ?? 'Login gagal.'),
+              backgroundColor: AppColors.red),
         );
       }
     }
@@ -102,43 +90,87 @@ class _LoginPageState extends State<LoginPage> {
           context.go('/home');
         } else if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: AppColors.red),
+            SnackBar(
+                content: Text(state.message),
+                backgroundColor: AppColors.red),
           );
         }
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Column(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Column(
             children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  icon: const Icon(DkgIcons.arrowLeft, color: AppColors.ink),
-                  onPressed: () => context.go('/'),
+              // ── Navy header ─────────────────────────────────
+              Container(
+                color: AppColors.navy,
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(
+                    24, MediaQuery.of(context).padding.top + 16, 24, 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.go('/'),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: AppColors.navyMid,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.arrow_back_ios_new_rounded,
+                            size: 16, color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.water_drop_rounded,
+                              size: 22, color: Colors.white),
+                        ),
+                        const SizedBox(width: 12),
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Masuk',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  letterSpacing: -0.3,
+                                )),
+                            Text('Selamat datang kembali',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 13,
+                                  color: Colors.white60,
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
+
+              // ── Form area ───────────────────────────────────
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(26, 10, 26, 24),
+                  padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const AppLogo(size: 50),
-                      const SizedBox(height: 22),
-                      const Text('Masuk',
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 27,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.ink,
-                            letterSpacing: -0.4,
-                          )),
-                      const SizedBox(height: 6),
-                      const Text('Selamat datang kembali',
-                          style: TextStyle(fontSize: 14.5, color: AppColors.slate500)),
-                      const SizedBox(height: 24),
-                      // Google sign in
+                      // Google button
                       BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
                           final loading = state is AuthLoading || _gLoading;
@@ -149,26 +181,28 @@ class _LoginPageState extends State<LoginPage> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: AppColors.line, width: 1.5),
+                                border:
+                                    Border.all(color: AppColors.line, width: 1.5),
                                 boxShadow: AppColors.shadowSoft,
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: loading
-                                    ? const [
-                                        SizedBox(
+                                    ? [
+                                        const SizedBox(
                                           width: 20,
                                           height: 20,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 2.4,
-                                            valueColor: AlwaysStoppedAnimation(AppColors.primary),
+                                            valueColor: AlwaysStoppedAnimation(
+                                                AppColors.primary),
                                           ),
                                         ),
-                                        SizedBox(width: 11),
-                                        Text('Menghubungkan…',
+                                        const SizedBox(width: 11),
+                                        const Text('Menghubungkan…',
                                             style: TextStyle(
                                               fontFamily: 'PlusJakartaSans',
-                                              fontSize: 15.5,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.w700,
                                             )),
                                       ]
@@ -178,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                                         Text('Lanjut dengan Google',
                                             style: TextStyle(
                                               fontFamily: 'PlusJakartaSans',
-                                              fontSize: 15.5,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.w700,
                                               color: AppColors.ink,
                                             )),
@@ -193,10 +227,10 @@ class _LoginPageState extends State<LoginPage> {
                         const Expanded(child: Divider(color: AppColors.line)),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: const Text('atau email',
+                          child: Text('atau email',
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
-                                fontSize: 12.5,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.slate400,
                               )),
@@ -221,9 +255,12 @@ class _LoginPageState extends State<LoginPage> {
                         placeholder: '••••••••',
                         prefixIcon: const Icon(DkgIcons.lock, size: 20),
                         suffixIcon: IconButton(
-                          icon: Icon(_showPw ? DkgIcons.eyeOff : DkgIcons.eye,
-                              size: 20, color: AppColors.slate400),
-                          onPressed: () => setState(() => _showPw = !_showPw),
+                          icon: Icon(
+                              _showPw ? DkgIcons.eyeOff : DkgIcons.eye,
+                              size: 20,
+                              color: AppColors.slate400),
+                          onPressed: () =>
+                              setState(() => _showPw = !_showPw),
                         ),
                       ),
                       Align(
@@ -235,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                                 fontFamily: 'PlusJakartaSans',
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 13.5,
+                                fontSize: 13,
                               )),
                         ),
                       ),
@@ -247,12 +284,13 @@ class _LoginPageState extends State<LoginPage> {
                           isLoading: state is AuthLoading,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text('Belum punya akun? ',
-                              style: TextStyle(fontSize: 14, color: AppColors.slate500)),
+                              style: TextStyle(
+                                  fontSize: 14, color: AppColors.slate500)),
                           GestureDetector(
                             onTap: () => context.go('/register'),
                             child: const Text('Daftar',
@@ -286,8 +324,8 @@ class _GoogleIcon extends StatelessWidget {
       height: 21,
       child: Image.network(
         'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png',
-        errorBuilder: (_, __, ___) =>
-            const Icon(Icons.g_mobiledata_rounded, size: 24, color: Colors.red),
+        errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata_rounded,
+            size: 24, color: Colors.red),
       ),
     );
   }
