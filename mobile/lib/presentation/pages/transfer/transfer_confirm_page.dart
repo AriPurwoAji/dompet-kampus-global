@@ -6,7 +6,6 @@ import '../../widgets/app_avatar.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_logo.dart';
 import '../../widgets/app_top_bar.dart';
-import '../../widgets/feature_icon.dart';
 
 class TransferConfirmPage extends StatelessWidget {
   final Map<String, dynamic> recipient;

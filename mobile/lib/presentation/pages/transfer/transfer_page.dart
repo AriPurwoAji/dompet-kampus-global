@@ -4,7 +4,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../widgets/app_avatar.dart';
 import '../../widgets/app_field.dart';
 import '../../widgets/app_top_bar.dart';
-import '../../widgets/feature_icon.dart';
 
 const _contacts = [
   {'id': '1', 'name': 'Budi Santoso', 'sub': '0812-3456-7890', 'fav': true},

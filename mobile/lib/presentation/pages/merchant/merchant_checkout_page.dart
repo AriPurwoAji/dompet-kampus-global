@@ -4,7 +4,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_logo.dart';
-import '../../widgets/feature_icon.dart';
 
 const _orange = Color(0xFFFF6A2B);
 
