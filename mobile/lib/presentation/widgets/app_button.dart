@@ -94,7 +94,7 @@ class AppButton extends StatelessWidget {
           AppColors.shadowPrimary,
           null,
         ),
-      AppButtonVariant.dark => (AppColors.ink, Colors.white, [], null),
+      AppButtonVariant.dark => (AppColors.navy, Colors.white, [], null),
       AppButtonVariant.soft => (AppColors.primarySurface, AppColors.primary, [], null),
       AppButtonVariant.ghost => (Colors.transparent, AppColors.slate600, [], null),
       AppButtonVariant.outline => (
