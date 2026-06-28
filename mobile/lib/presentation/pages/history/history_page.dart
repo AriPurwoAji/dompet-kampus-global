@@ -27,8 +27,8 @@ class _HistoryPageState extends State<HistoryPage> {
       body: Column(
         children: [
           Container(
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 12, 20, 0),
+            color: AppColors.navy,
+            padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 16, 20, 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -37,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.ink,
+                      color: Colors.white,
                       letterSpacing: -0.3,
                     )),
                 const SizedBox(height: 16),
@@ -51,7 +51,9 @@ class _HistoryPageState extends State<HistoryPage> {
                                 duration: const Duration(milliseconds: 150),
                                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: _tab == t[0] ? AppColors.primary : AppColors.bg,
+                                  color: _tab == t[0]
+                                      ? AppColors.primary
+                                      : AppColors.navyMid,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(t[1],
@@ -59,15 +61,15 @@ class _HistoryPageState extends State<HistoryPage> {
                                       fontFamily: 'PlusJakartaSans',
                                       fontSize: 13,
                                       fontWeight: FontWeight.w700,
-                                      color: _tab == t[0] ? Colors.white : AppColors.slate500,
+                                      color: _tab == t[0]
+                                          ? Colors.white
+                                          : Colors.white60,
                                     )),
                               ),
                             ),
                           ))
                       .toList(),
                 ),
-                const SizedBox(height: 14),
-                const Divider(height: 1, color: AppColors.line2),
               ],
             ),
           ),
