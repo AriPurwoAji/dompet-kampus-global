@@ -94,7 +94,6 @@ Future<void> init() async {
   // BLoCs
   sl.registerFactory(() => AuthBloc(
         verifyToken: sl(),
-        getMe: sl(),
         logout: sl(),
         authRepo: sl(),
       ));
