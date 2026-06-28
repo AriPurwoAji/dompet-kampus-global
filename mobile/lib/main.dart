@@ -1,3 +1,4 @@
+import 'package:app_links/app_links.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,19 +13,15 @@ void main() async {
 
   Bloc.observer = const AppBlocObserver();
 
-  // Initialize Firebase — pastikan google-services.json/GoogleService-Info.plist sudah ada
   await Firebase.initializeApp();
 
-  // Initialize dependency injection
   await di.init();
 
-  // Set preferred orientations
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Status bar style
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
@@ -33,8 +30,30 @@ void main() async {
   runApp(const DompetKampusApp());
 }
 
-class DompetKampusApp extends StatelessWidget {
+class DompetKampusApp extends StatefulWidget {
   const DompetKampusApp({super.key});
+
+  @override
+  State<DompetKampusApp> createState() => _DompetKampusAppState();
+}
+
+class _DompetKampusAppState extends State<DompetKampusApp> {
+  final _appLinks = AppLinks();
+
+  @override
+  void initState() {
+    super.initState();
+    _appLinks.uriLinkStream.listen((uri) {
+      if (uri.scheme == 'dkg' && uri.host == 'checkout') {
+        AppRouter.router.go('/merchant', extra: {
+          'storeName': uri.queryParameters['store'] ?? 'Hydraulic Store',
+          'orderId': uri.queryParameters['order'] ?? '',
+          'amount': double.tryParse(uri.queryParameters['amount'] ?? '0') ?? 0.0,
+          'items': uri.queryParameters['items'] ?? '',
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
