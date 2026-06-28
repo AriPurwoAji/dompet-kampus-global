@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/auth_bloc.dart';
-import '../../widgets/app_avatar.dart';
 import '../../widgets/app_badge.dart';
 import '../../widgets/feature_icon.dart';
 
@@ -28,18 +27,32 @@ class AccountPage extends StatelessWidget {
               children: [
                 // Header
                 Container(
-                  decoration: const BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(28),
-                      bottomRight: Radius.circular(28),
-                    ),
-                  ),
+                  color: AppColors.navy,
                   padding: EdgeInsets.fromLTRB(
-                      20, MediaQuery.of(context).padding.top + 12, 20, 24),
+                      20, MediaQuery.of(context).padding.top + 16, 20, 24),
                   child: Row(
                     children: [
-                      AppAvatar(name: user?.name ?? 'User', size: 60, bg: Colors.white.withValues(alpha: 0.25)),
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: AppColors.navyMid,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            (user?.name ?? 'U').isNotEmpty
+                                ? (user?.name ?? 'U')[0].toUpperCase()
+                                : 'U',
+                            style: const TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 22,
+                            ),
+                          ),
+                        ),
+                      ),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
@@ -48,7 +61,7 @@ class AccountPage extends StatelessWidget {
                             Text(user?.name ?? 'Pengguna',
                                 style: const TextStyle(
                                   fontFamily: 'PlusJakartaSans',
-                                  fontSize: 19,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.white,
                                 )),
@@ -57,7 +70,7 @@ class AccountPage extends StatelessWidget {
                                 style: const TextStyle(
                                   fontFamily: 'PlusJakartaSans',
                                   fontSize: 13,
-                                  color: Colors.white70,
+                                  color: Colors.white60,
                                 )),
                           ],
                         ),
@@ -65,19 +78,23 @@ class AccountPage extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.18),
+                          color: AppColors.primary.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.5),
+                              width: 1),
                         ),
                         child: const Row(
                           children: [
-                            Icon(Icons.verified_user_outlined, size: 14, color: Colors.white),
+                            Icon(Icons.verified_user_outlined,
+                                size: 13, color: AppColors.primaryLight),
                             SizedBox(width: 5),
                             Text('Terverifikasi',
                                 style: TextStyle(
                                   fontFamily: 'PlusJakartaSans',
-                                  fontSize: 11.5,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                  color: AppColors.primaryLight,
                                 )),
                           ],
                         ),
