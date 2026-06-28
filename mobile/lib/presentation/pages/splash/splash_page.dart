@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../widgets/app_button.dart';
-import '../../widgets/app_logo.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -32,32 +31,34 @@ class _SplashPageState extends State<SplashPage> {
       },
       child: Scaffold(
         body: Container(
-          decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+          decoration: const BoxDecoration(
+            gradient: AppColors.navyGradient,
+          ),
           child: SafeArea(
             child: Stack(
               children: [
                 // Decorative circles
                 Positioned(
-                  top: -120,
-                  right: -90,
+                  top: -100,
+                  right: -80,
                   child: Container(
-                    width: 320,
-                    height: 320,
+                    width: 300,
+                    height: 300,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.08),
+                      color: Colors.white.withValues(alpha: 0.05),
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom: 120,
-                  left: -100,
+                  bottom: 140,
+                  left: -80,
                   child: Container(
-                    width: 220,
-                    height: 220,
+                    width: 200,
+                    height: 200,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.07),
+                      color: AppColors.primary.withValues(alpha: 0.15),
                     ),
                   ),
                 ),
@@ -67,8 +68,18 @@ class _SplashPageState extends State<SplashPage> {
                   child: Column(
                     children: [
                       const Spacer(),
-                      const AppLogo(size: 92, light: true),
-                      const SizedBox(height: 26),
+                      // Logo box
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: const Icon(Icons.water_drop_rounded,
+                            size: 44, color: Colors.white),
+                      ),
+                      const SizedBox(height: 28),
                       const Text(
                         'Dompet Kampus',
                         style: TextStyle(
@@ -86,7 +97,7 @@ class _SplashPageState extends State<SplashPage> {
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: AppColors.primary,
                           letterSpacing: 3,
                         ),
                       ),
@@ -97,7 +108,7 @@ class _SplashPageState extends State<SplashPage> {
                         style: TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 15,
-                          color: Colors.white,
+                          color: Colors.white60,
                           height: 1.5,
                         ),
                       ),
