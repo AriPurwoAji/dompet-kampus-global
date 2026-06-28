@@ -98,6 +98,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     try {
       final result = await _topup(event.amount);
       emit(PaymentTopupSuccess(balance: result.balance, amount: result.amount));
+    } on AuthFailure catch (_) {
+      emit(PaymentError('Sesi habis. Silakan login ulang.'));
     } on ServerFailure catch (e) {
       emit(PaymentError(e.message));
     } on NetworkFailure catch (e) {
@@ -115,6 +117,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         otpType: event.otpType,
       );
       emit(PaymentTransferSuccess(result));
+    } on AuthFailure catch (_) {
+      emit(PaymentError('Sesi habis. Silakan login ulang.'));
     } on InvalidOtpFailure catch (e) {
       emit(PaymentInvalidOtp(e.message));
     } on InsufficientBalanceFailure catch (e) {

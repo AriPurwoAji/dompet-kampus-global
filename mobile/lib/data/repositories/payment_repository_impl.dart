@@ -12,6 +12,8 @@ class PaymentRepositoryImpl implements PaymentRepository {
   Future<({double balance, double amount})> topup(double amount) async {
     try {
       return await _remote.topup(amount);
+    } on UnauthorizedException catch (e) {
+      throw AuthFailure(e.message);
     } on ServerException catch (e) {
       throw ServerFailure(e.message);
     } on NetworkException catch (e) {
@@ -33,6 +35,8 @@ class PaymentRepositoryImpl implements PaymentRepository {
         otpCode: otpCode,
         otpType: otpType,
       );
+    } on UnauthorizedException catch (e) {
+      throw AuthFailure(e.message);
     } on InvalidOtpException catch (e) {
       throw InvalidOtpFailure(e.message);
     } on InsufficientBalanceException catch (e) {

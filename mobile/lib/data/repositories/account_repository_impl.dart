@@ -13,6 +13,8 @@ class AccountRepositoryImpl implements AccountRepository {
   Future<AccountEntity> getAccount() async {
     try {
       return await _remote.getAccount();
+    } on UnauthorizedException catch (e) {
+      throw AuthFailure(e.message);
     } on ServerException catch (e) {
       throw ServerFailure(e.message);
     } on NetworkException catch (e) {
@@ -24,6 +26,8 @@ class AccountRepositoryImpl implements AccountRepository {
   Future<List<TransactionEntity>> getTransactions() async {
     try {
       return await _remote.getTransactions();
+    } on UnauthorizedException catch (e) {
+      throw AuthFailure(e.message);
     } on ServerException catch (e) {
       throw ServerFailure(e.message);
     } on NetworkException catch (e) {

@@ -84,6 +84,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  void setAuthToken(String token) {
+    _remote.setAuthToken(token);
+  }
+
+  @override
   Future<void> setAuthVerified(bool verified) => _local.saveAuthVerified(verified);
 
   @override
