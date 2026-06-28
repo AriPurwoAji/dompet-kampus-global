@@ -5,7 +5,6 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../blocs/payment/payment_bloc.dart';
-import '../../widgets/feature_icon.dart';
 import '../../widgets/pin_pad.dart';
 
 class PinPage extends StatefulWidget {
@@ -152,7 +151,7 @@ class _PinPageState extends State<PinPage> {
                         const Spacer(),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 80),
-                          transform: _hasError ? (Matrix4.identity()..translate(10.0)) : Matrix4.identity(),
+                          transform: _hasError ? (Matrix4.identity()..translateByDouble(10.0, 0, 0, 0)) : Matrix4.identity(),
                           child: PinPad(
                             value: _pin,
                             onChanged: (v) => setState(() => _pin = v),
