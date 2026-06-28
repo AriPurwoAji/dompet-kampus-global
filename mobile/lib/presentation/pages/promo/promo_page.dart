@@ -20,20 +20,19 @@ class PromoPage extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 12, 20, 18),
-            child: Column(
+            color: AppColors.navy,
+            padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 16, 20, 20),
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text('Promo & Reward',
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.ink,
+                      color: Colors.white,
                       letterSpacing: -0.3,
                     )),
-                Divider(height: 18, color: AppColors.line2),
               ],
             ),
           ),
