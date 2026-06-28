@@ -159,7 +159,17 @@ class AppRouter {
               ));
             },
           ),
-          GoRoute(path: '/merchant', builder: (_, __) => _withPayment(const MerchantCheckoutPage())),
+          GoRoute(
+            path: '/merchant',
+            builder: (_, state) {
+              final extra = (state.extra as Map<String, dynamic>?) ?? {};
+              return _withPayment(MerchantCheckoutPage(
+                storeName: extra['storeName'] as String? ?? 'TokoBelanja',
+                orderId: extra['orderId'] as String? ?? 'TB-2026-88142',
+                deepLinkAmount: (extra['amount'] as num? ?? 0).toDouble(),
+              ));
+            },
+          ),
         ],
       );
 
