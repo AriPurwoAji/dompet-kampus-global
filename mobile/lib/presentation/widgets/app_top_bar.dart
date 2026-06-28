@@ -14,12 +14,13 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.navy,
       elevation: 0,
       scrolledUnderElevation: 0,
       leading: onBack != null
           ? IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: AppColors.ink),
+              icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                  size: 20, color: Colors.white),
               onPressed: onBack,
             )
           : null,
@@ -29,14 +30,15 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
           fontFamily: 'PlusJakartaSans',
           fontSize: 17,
           fontWeight: FontWeight.w700,
-          color: AppColors.ink,
+          color: Colors.white,
         ),
       ),
       centerTitle: true,
       actions: actions,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(height: 1, color: AppColors.line2),
+        child: Container(
+            height: 1, color: Colors.white.withValues(alpha: 0.08)),
       ),
     );
   }
