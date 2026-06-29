@@ -31,7 +31,7 @@ import '../../presentation/widgets/app_tab_bar.dart';
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
-  static GoRouter get router => GoRouter(
+  static final GoRouter router = GoRouter(
         navigatorKey: _rootNavigatorKey,
         initialLocation: '/',
         routes: [

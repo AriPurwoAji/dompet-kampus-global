@@ -43,16 +43,24 @@ class _DompetKampusAppState extends State<DompetKampusApp> {
   @override
   void initState() {
     super.initState();
-    _appLinks.uriLinkStream.listen((uri) {
-      if (uri.scheme == 'dkg' && uri.host == 'checkout') {
-        AppRouter.router.go('/merchant', extra: {
-          'storeName': uri.queryParameters['store'] ?? 'Hydraulic Store',
-          'orderId': uri.queryParameters['order'] ?? '',
-          'amount': double.tryParse(uri.queryParameters['amount'] ?? '0') ?? 0.0,
-          'items': uri.queryParameters['items'] ?? '',
-        });
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Cold start: app dibuka dari deep link
+      final initialUri = await _appLinks.getInitialLink();
+      if (initialUri != null) _handleDeepLink(initialUri);
+
+      // Warm start: app sudah berjalan, terima deep link baru
+      _appLinks.uriLinkStream.listen(_handleDeepLink);
     });
+  }
+
+  void _handleDeepLink(Uri uri) {
+    if (uri.scheme == 'dkg' && uri.host == 'checkout') {
+      AppRouter.router.go('/merchant', extra: {
+        'storeName': uri.queryParameters['store'] ?? 'Hydraulic Store',
+        'orderId': uri.queryParameters['order'] ?? '',
+        'amount': double.tryParse(uri.queryParameters['amount'] ?? '0') ?? 0.0,
+      });
+    }
   }
 
   @override

@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../../data/datasources/local/secure_storage_datasource.dart';
+import '../../../domain/usecases/auth/send_otp_usecase.dart';
+import '../../../injection/injection_container.dart';
 import '../../blocs/payment/payment_bloc.dart';
 import '../../widgets/pin_pad.dart';
 
@@ -19,10 +22,39 @@ class _PinPageState extends State<PinPage> {
   String _pin = '';
   bool _busy = false;
   bool _hasError = false;
+  String _otpType = AppConstants.otpTypeTotp;
+  String _otpHint = 'Masukkan kode dari Google Authenticator';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOtpMethod();
+  }
+
+  Future<void> _loadOtpMethod() async {
+    final method = await sl<SecureStorageDatasource>().get2faMethod();
+    if (!mounted) return;
+    if (method == 'smtp') {
+      setState(() {
+        _otpType = AppConstants.otpTypeEmail;
+        _otpHint = 'Cek email kamu, masukkan kode OTP yang dikirim';
+      });
+      try { await sl<SendOtpEmailUsecase>()(); } catch (_) {}
+    } else if (method == 'totp') {
+      setState(() {
+        _otpType = AppConstants.otpTypeTotp;
+        _otpHint = 'Masukkan kode dari Google Authenticator';
+      });
+    } else {
+      setState(() {
+        _otpType = AppConstants.otpTypeEmail;
+        _otpHint = 'Cek email kamu, masukkan kode OTP yang dikirim';
+      });
+      try { await sl<SendOtpEmailUsecase>()(); } catch (_) {}
+    }
+  }
 
   void _onComplete(String pin) {
-    // In production, validate PIN with backend
-    // Here we simulate: any 6-digit PIN triggers the payment
     setState(() => _busy = true);
     _processPayment();
   }
@@ -32,24 +64,22 @@ class _PinPageState extends State<PinPage> {
     final kind = flow['kind'] as String? ?? '';
 
     if (kind == 'transfer') {
-      // Use OTP from 2FA — for demo we use a hardcoded type
       context.read<PaymentBloc>().add(PaymentTransferRequested(
         amount: (flow['amount'] as num).toDouble(),
         description: flow['note'] as String? ?? 'Transfer',
-        otpCode: '000000', // In production: get from actual 2FA
-        otpType: AppConstants.otpTypeTotp,
+        otpCode: _pin,
+        otpType: _otpType,
       ));
     } else if (kind == 'topup') {
       context.read<PaymentBloc>().add(PaymentTopupRequested(
         (flow['amount'] as num).toDouble(),
       ));
     } else if (kind == 'payment' || kind == 'deeplink') {
-      // QRIS payment → also uses transfer endpoint
       context.read<PaymentBloc>().add(PaymentTransferRequested(
         amount: (flow['amount'] as num).toDouble(),
-        description: flow['description'] as String? ?? 'Pembayaran QRIS',
-        otpCode: '000000',
-        otpType: AppConstants.otpTypeTotp,
+        description: flow['description'] as String? ?? 'Pembayaran',
+        otpCode: _pin,
+        otpType: _otpType,
       ));
     }
   }
@@ -137,7 +167,7 @@ class _PinPageState extends State<PinPage> {
                           child: const Center(child: Icon(Icons.lock_outline_rounded, size: 26, color: AppColors.primary)),
                         ),
                         const SizedBox(height: 16),
-                        const Text('Masukkan PIN',
+                        const Text('Masukkan Kode OTP',
                             style: TextStyle(
                               fontFamily: 'PlusJakartaSans',
                               fontSize: 21,
@@ -145,9 +175,9 @@ class _PinPageState extends State<PinPage> {
                               color: AppColors.ink,
                             )),
                         const SizedBox(height: 6),
-                        const Text('Masukkan 6 digit PIN keamanan kamu',
+                        Text(_otpHint,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 13.5, color: AppColors.slate500)),
+                            style: const TextStyle(fontSize: 13.5, color: AppColors.slate500)),
                         const Spacer(),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 80),
@@ -159,16 +189,6 @@ class _PinPageState extends State<PinPage> {
                           ),
                         ),
                         const SizedBox(height: 18),
-                        const Text.rich(TextSpan(
-                          text: 'Lupa PIN? ',
-                          style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, color: AppColors.slate400),
-                          children: [
-                            TextSpan(
-                              text: 'Reset',
-                              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
-                            ),
-                          ],
-                        )),
                       ],
                     ),
                   ),
