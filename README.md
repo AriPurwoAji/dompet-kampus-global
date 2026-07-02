@@ -127,23 +127,23 @@ Untuk Android emulator, gunakan `10.0.2.2:8080` jika backend berjalan di mesin h
 
 ## Screenshot Aplikasi
 
-![Splash Screen](mobile/assets/images/splash.jpeg)
+<p>
+  <img src="mobile/assets/images/splash.jpeg" alt="Splash Screen" width="260" />
+  <img src="mobile/assets/images/register.jpeg" alt="Register Screen" width="260" />
+  <img src="mobile/assets/images/login.jpeg" alt="Login Screen" width="260" />
+</p>
 
-![Register Screen](mobile/assets/images/register.jpeg)
+<p>
+  <img src="mobile/assets/images/dashboard.jpeg" alt="Home Dashboard" width="260" />
+  <img src="mobile/assets/images/autentikasi.jpeg" alt="2FA Email / TOTP" width="260" />
+  <img src="mobile/assets/images/notifikasi.jpeg" alt="2FA Notifikasi" width="260" />
+</p>
 
-![Login Screen](mobile/assets/images/login.jpeg)
-
-![Home Dashboard](mobile/assets/images/dashboard.jpeg)
-
-![2FA Email / TOTP](mobile/assets/images/autentikasi.jpeg)
-
-![2FA Notifikasi](mobile/assets/images/notifikasi.jpeg)
-
-![Top Up Screen](mobile/assets/images/topup.jpeg)
-
-![Pembayaran Merchant](mobile/assets/images/pembayaran.jpeg)
-
-![Riwayat Transaksi](mobile/assets/images/riwayat.jpeg)
+<p>
+  <img src="mobile/assets/images/topup.jpeg" alt="Top Up Screen" width="260" />
+  <img src="mobile/assets/images/pembayaran.jpeg" alt="Pembayaran Merchant" width="260" />
+  <img src="mobile/assets/images/riwayat.jpeg" alt="Riwayat Transaksi" width="260" />
+</p>
 
 ## Konfigurasi Backend
 
