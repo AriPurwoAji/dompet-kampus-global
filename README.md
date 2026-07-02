@@ -22,7 +22,7 @@ Dompet Kampus Global adalah aplikasi e-money yang dirancang untuk ekosistem kamp
 - melihat riwayat transaksi dan status transaksi sukses
 - mengamankan transaksi dengan kode OTP 6 digit sesuai metode 2FA
 
-> Catatan: implementasi deep link pada proyek ini menggunakan scheme `dkg://checkou
+> Catatan: implementasi deep link pada proyek ini menggunakan scheme `dkg://checkout`.
 
 ## Arsitektur Aplikasi
 
@@ -124,6 +124,26 @@ static const String apiVersion = '/v1';
 ```
 
 Untuk Android emulator, gunakan `10.0.2.2:8080` jika backend berjalan di mesin host.
+
+## Screenshot Aplikasi
+
+![Splash Screen](mobile/assets/images/splash.jpeg)
+
+![Register Screen](mobile/assets/images/register.jpeg)
+
+![Login Screen](mobile/assets/images/login.jpeg)
+
+![Home Dashboard](mobile/assets/images/dashboard.jpeg)
+
+![2FA Email / TOTP](mobile/assets/images/autentikasi.jpeg)
+
+![2FA Notifikasi](mobile/assets/images/notifikasi.jpeg)
+
+![Top Up Screen](mobile/assets/images/topup.jpeg)
+
+![Pembayaran Merchant](mobile/assets/images/pembayaran.jpeg)
+
+![Riwayat Transaksi](mobile/assets/images/riwayat.jpeg)
 
 ## Konfigurasi Backend
 
