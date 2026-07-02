@@ -10,6 +10,13 @@ Aplikasi ini menggabungkan frontend Flutter dan backend Go dengan fitur autentik
 - Kelas: TI 23 SE M
 - Email: 1123150126@global.ac.id
 
+## Repository Terkait
+
+| Nama Repository | URL |
+| --- | --- |
+| E-Commerce | https://github.com/AriPurwoAji/uts_mobile |
+| E-Money | https://github.com/AriPurwoAji/dompet-kampus-global |
+
 ## Ringkasan Proyek
 
 Dompet Kampus Global adalah aplikasi e-money yang dirancang untuk ekosistem kampus, yang memungkinkan mahasiswa:
