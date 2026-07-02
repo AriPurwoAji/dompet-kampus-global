@@ -127,23 +127,17 @@ Untuk Android emulator, gunakan `10.0.2.2:8080` jika backend berjalan di mesin h
 
 ## Screenshot Aplikasi
 
-<p>
-  <img src="mobile/assets/images/splash.jpeg" alt="Splash Screen" width="260" />
-  <img src="mobile/assets/images/register.jpeg" alt="Register Screen" width="260" />
-  <img src="mobile/assets/images/login.jpeg" alt="Login Screen" width="260" />
-</p>
+| Splash Screen | Register Screen | Login Screen |
+| --- | --- | --- |
+| <img src="mobile/assets/images/splash.jpeg" alt="Splash Screen" width="260" /> | <img src="mobile/assets/images/register.jpeg" alt="Register Screen" width="260" /> | <img src="mobile/assets/images/login.jpeg" alt="Login Screen" width="260" /> |
 
-<p>
-  <img src="mobile/assets/images/dashboard.jpeg" alt="Home Dashboard" width="260" />
-  <img src="mobile/assets/images/autentikasi.jpeg" alt="2FA Email / TOTP" width="260" />
-  <img src="mobile/assets/images/notifikasi.jpeg" alt="2FA Notifikasi" width="260" />
-</p>
+| Home Dashboard | 2FA Email / TOTP | 2FA Notifikasi |
+| --- | --- | --- |
+| <img src="mobile/assets/images/dashboard.jpeg" alt="Home Dashboard" width="260" /> | <img src="mobile/assets/images/autentikasi.jpeg" alt="2FA Email / TOTP" width="260" /> | <img src="mobile/assets/images/notifikasi.jpeg" alt="2FA Notifikasi" width="260" /> |
 
-<p>
-  <img src="mobile/assets/images/topup.jpeg" alt="Top Up Screen" width="260" />
-  <img src="mobile/assets/images/pembayaran.jpeg" alt="Pembayaran Merchant" width="260" />
-  <img src="mobile/assets/images/riwayat.jpeg" alt="Riwayat Transaksi" width="260" />
-</p>
+| Top Up Screen | Pembayaran Merchant | Riwayat Transaksi |
+| --- | --- | --- |
+| <img src="mobile/assets/images/topup.jpeg" alt="Top Up Screen" width="260" /> | <img src="mobile/assets/images/pembayaran.jpeg" alt="Pembayaran Merchant" width="260" /> | <img src="mobile/assets/images/riwayat.jpeg" alt="Riwayat Transaksi" width="260" /> |
 
 ## Konfigurasi Backend
 
@@ -177,16 +171,3 @@ File `backend/.env` berisi variabel lingkungan penting seperti:
 - `POST /v1/payment/topup` — top up saldo
 - `POST /v1/payment/transfer` — transfer saldo dengan OTP
 
-## Catatan Analisis
-
-- README sebelumnya masih berisi template dari proyek lain. Dokumentasi ini diganti agar mencerminkan struktur dan fitur nyata di repositori `emoney`.
-- Backend project menggunakan MySQL
-- Project Flutter memakai deep link dan `app_links` untuk merchant checkout.
-- File `mobile/lib/core/constants/app_constants.dart` penting untuk menyesuaikan URL backend.
-
-## Saran Perbaikan README
-
-- Tambahkan `backend/.env.example` untuk contoh konfigurasi tanpa kredensial.
-- Tambahkan diagram alur login / 2FA dan alur pembayaran deep link.
-- Sertakan snapshot fitur yang sudah berjalan dan yang masih dalam pengembangan.
-- Tambahkan perintah `go mod tidy` dan `flutter pub get` ke section setup.
