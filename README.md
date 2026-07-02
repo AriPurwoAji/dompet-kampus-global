@@ -180,4 +180,4 @@ File `backend/.env` berisi variabel lingkungan penting seperti:
 
 ## LINK VIDEO YOUTUBE
 
-Comming soon
+https://www.youtube.com/watch?v=EJCrtaCxb28
